@@ -1,0 +1,18 @@
+# Environment variables and API Keys
+.env
+
+# SQLite Database
+data/
+*.db
+
+# Python Caching and Virtual Environments
+__pycache__/
+*.py[cod]
+*.class
+.venv/
+venv/
+ENV/
+
+# System / OS files
+.DS_Store
+Thumbs.db

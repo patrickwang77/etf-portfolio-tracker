@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>00997A 群益美國增長主動式ETF 監控主控台</title>
+    <!-- Google Fonts Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Chart.js for smooth graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Marked.js for rendering markdown output of Gemini AI advisor -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo">
+                    <i class="fa-solid fa-chart-line-up text-glow"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>ETF Tracker</h1>
+                    <span>Active Monitor</span>
+                </div>
+            </div>
+            
+            <!-- ETF Selector Dropdown -->
+            <div class="etf-selector-container">
+                <i class="fa-solid fa-circle-chevron-down select-chevron"></i>
+                <select id="etf-selector" class="etf-select">
+                    <option value="00997A">00997A 群益美國增長</option>
+                    <option value="00981A">00981A 統一台股增長</option>
+                    <option value="00403A">00403A 統一升級50</option>
+                    <option value="00988A">00988A 統一全球創新</option>
+                </select>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-item active" data-tab="dashboard">
+                    <i class="fa-solid fa-gauge"></i>
+                    <span>儀表板首頁</span>
+                </a>
+                <a href="#holdings" class="nav-item" data-tab="holdings">
+                    <i class="fa-solid fa-pie-chart"></i>
+                    <span>持倉細節</span>
+                </a>
+                <a href="#history" class="nav-item" data-tab="history">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>歷史淨值</span>
+                </a>
+                <a href="#announcements" class="nav-item" data-tab="announcements">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <span>重要公告</span>
+                </a>
+                <a href="#settings" class="nav-item" data-tab="settings">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>系統設定</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="etf-badge">
+                    <span class="code">00997A</span>
+                    <span class="desc">群益美國增長</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header Bar -->
+            <header class="top-header">
+                <div class="header-title">
+                    <h2 id="current-view-title">儀表板首頁</h2>
+                    <p class="subtitle">00997A 群益美國增長主動式ETF基金 實時監測系統</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-glow" id="btn-header-sync">
+                        <i class="fa-solid fa-sync"></i> 立即同步
+                    </button>
+                    <div class="last-sync-badge">
+                        <i class="fa-solid fa-clock"></i> 淨值更新: <span id="sync-time-val">-</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Scrollable Content Frame -->
+            <div class="content-body">
+                
+                <!-- 1. DASHBOARD VIEW -->
+                <section id="dashboard-tab" class="tab-pane active">
+                    <!-- KPI Cards Row -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <span class="kpi-title">最新預估淨值 (NAV)</span>
+                                <div class="kpi-icon nav-icon"><i class="fa-solid fa-coins"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpi-nav">--.--</div>
+                            <div class="kpi-footer">
+                                <span class="kpi-trend" id="kpi-nav-change">--.--</span>
+                                <span class="kpi-trend-label">相較昨收</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <span class="kpi-title">您的持倉總額</span>
+                                <div class="kpi-icon portfolio-icon"><i class="fa-solid fa-briefcase"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpi-portfolio-val">$--,---</div>
+                            <div class="kpi-footer">
+                                <span class="kpi-trend" id="kpi-portfolio-change">--.--</span>
+                                <span class="kpi-trend-label">持倉單位數: <span id="kpi-units-val">0</span> 股</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <span class="kpi-title">基金規模 (TWD)</span>
+                                <div class="kpi-icon size-icon"><i class="fa-solid fa-vault"></i></div>
+                            </div>
+                            <div class="kpi-value font-md" id="kpi-assets">--.-- 億</div>
+                            <div class="kpi-footer">
+                                <span class="kpi-footer-text">發行單位: <span id="kpi-outstanding-units">--</span> 股</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Dashboard Chart & Top Holdings -->
+                    <div class="dashboard-layout">
+                        <!-- Chart Card -->
+                        <div class="card glass-card chart-card">
+                            <div class="card-header">
+                                <div class="chart-type-tabs">
+                                    <div class="chart-tab active" data-type="portfolio">
+                                        <i class="fa-solid fa-briefcase"></i> 個人資產規模
+                                    </div>
+                                    <div class="chart-tab" data-type="nav">
+                                        <i class="fa-solid fa-coins"></i> 基金淨值趨勢
+                                    </div>
+                                </div>
+                                <div class="chart-actions">
+                                    <button class="chart-time-btn active" data-days="7">7D</button>
+                                    <button class="chart-time-btn" data-days="30">30D</button>
+                                    <button class="chart-time-btn" data-days="90">ALL</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="dashboardChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top Holdings List Card -->
+                        <div class="card glass-card top-holdings-card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-award"></i> 前十大核心持倉 (Top 10)</h3>
+                                <a href="#holdings" class="view-all-link" id="link-view-all-holdings">看全部 holdings</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="top-holdings-list" id="dashboard-top-holdings">
+                                    <!-- Dynamic rows loaded here -->
+                                    <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i> 載入持股中...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Insights and News moved/removed -->
+                </section>
+
+                <!-- 2. HOLDINGS TAB -->
+                <section id="holdings-tab" class="tab-pane">
+                        <!-- Sub-tabs for Holdings view -->
+                        <div class="sub-tabs-container mb-4">
+                            <button class="sub-tab-btn active" data-subtab="holdings-list-view">
+                                <i class="fa-solid fa-list-ul"></i> 成分持股清單
+                            </button>
+                            <button class="sub-tab-btn" data-subtab="holdings-ai-view">
+                                <i class="fa-solid fa-brain"></i> AI 操盤診斷
+                            </button>
+                        </div>
+
+                    <!-- 1. Holdings List View Pane -->
+                    <div id="holdings-list-view-pane" class="sub-tab-pane active">
+                        <!-- Tab Sub-header -->
+                        <div class="holdings-filters card glass-card mb-4 p-3">
+                            <div class="filter-row">
+                                <div class="search-box">
+                                    <i class="fa-solid fa-search"></i>
+                                    <input type="text" id="holdings-search-input" placeholder="搜尋代號、股票名稱或國家...">
+                                </div>
+                                <div class="filter-metrics">
+                                    <div class="metric-item">
+                                        <span class="label">成分股總數:</span>
+                                        <span class="value" id="holdings-count-val">--</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="label">股票權重比重:</span>
+                                        <span class="value" id="holdings-weight-pct">--%</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="label">持股更新日期:</span>
+                                        <span class="value" id="holdings-date-val">----/--/--</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="holdings-layout">
+                            <!-- Left Side: Table of Holdings -->
+                            <div class="card glass-card holdings-table-card">
+                                <div class="card-header">
+                                    <h3>成分持股細節 (Full Portfolio PCF)</h3>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="data-table" id="holdings-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>股票代號</th>
+                                                    <th>股票名稱</th>
+                                                    <th class="text-right">持股權重 (%)</th>
+                                                    <th class="text-right">持有股數</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="holdings-table-body">
+                                                <!-- Dynamic entries loaded here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Side: Portfolio Shift Details -->
+                            <div class="holdings-sidebar">
+                                <!-- Shift analysis card -->
+                                <div class="card glass-card holdings-shift-card mb-4">
+                                    <div class="card-header">
+                                        <h3><i class="fa-solid fa-arrows-spin"></i> 本次成分股調整細節</h3>
+                                        <span class="badge badge-date" id="holdings-compare-date-val">相較於 ----/--/--</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="shift-lists">
+                                            <div class="shift-sec">
+                                                <h4 class="text-green"><i class="fa-solid fa-circle-plus"></i> 新增持股</h4>
+                                                <ul class="shift-list-items" id="holdings-added-list">
+                                                    <li>無新增持股</li>
+                                                </ul>
+                                            </div>
+                                            <div class="shift-sec mt-3">
+                                                <h4 class="text-red"><i class="fa-solid fa-circle-minus"></i> 刪除持股</h4>
+                                                <ul class="shift-list-items" id="holdings-removed-list">
+                                                    <li>無刪除持股</li>
+                                                </ul>
+                                            </div>
+                                            <div class="shift-sec mt-3">
+                                                <h4 class="text-purple"><i class="fa-solid fa-circle-chevron-up"></i> 重大權重加減碼</h4>
+                                                <ul class="shift-list-items" id="holdings-changed-list">
+                                                    <li>無權重變動</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Sector / Asset allocation mockup -->
+                                <div class="card glass-card allocation-card">
+                                    <div class="card-header">
+                                        <h3><i class="fa-solid fa-chart-pie"></i> 資產類別權重</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="allocation-items" id="allocation-breakdown">
+                                            <!-- Dynamic items -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- Close holdings-list-view-pane -->
+
+                    <!-- 2. Holdings AI View Pane -->
+                    <div id="holdings-ai-view-pane" class="sub-tab-pane">
+                        <div class="card glass-card ai-summary-card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-brain text-glow-purple"></i> AI 最新操盤判斷與行動建議</h3>
+                                <div class="ai-actions">
+                                    <div class="ai-range-selector">
+                                        <button class="ai-range-btn active" data-range="1">1D</button>
+                                        <button class="ai-range-btn" data-range="5">5D</button>
+                                        <button class="ai-range-btn" data-range="10">10D</button>
+                                    </div>
+                                    <button class="btn btn-sm btn-purple-outline" id="btn-trigger-ai-refresh">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI分析
+                                    </button>
+                                    <button class="btn btn-sm btn-purple-outline" id="btn-export-ai-html" style="display: none;">
+                                        <i class="fa-solid fa-file-export"></i> 匯出 HTML
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body markdown-body" id="dashboard-ai-summary">
+                                <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i> 請選擇上方天數並點擊「AI分析」按鈕進行成分股異動與核心持股診斷。</div>
+                            </div>
+                        </div>
+                </section>
+
+                <!-- 3. HISTORY TAB -->
+                <section id="history-tab" class="tab-pane">
+                    <div class="card glass-card mb-4">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-chart-area"></i> 00997A 歷史淨值與個人資產價值走勢</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container large-chart">
+                                <canvas id="historyChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h3>歷史淨值與折溢價明細紀錄表</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="data-table" id="history-table">
+                                    <thead>
+                                        <tr>
+                                            <th>日期</th>
+                                            <th class="text-right">預估淨值 (NAV)</th>
+                                            <th class="text-right">單日漲跌幅</th>
+                                            <th class="text-right">預估基金規模 (TWD)</th>
+                                            <th class="text-right">發行受益單位數</th>
+                                            <th class="text-right">您的個人持倉總額 (TWD)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="history-table-body">
+                                        <!-- Dynamic rows -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. ANNOUNCEMENTS TAB -->
+                <section id="announcements-tab" class="tab-pane">
+                    <div class="announcements-placeholder card glass-card">
+                        <i class="fa-solid fa-bullhorn warning-icon"></i>
+                        <h3>重要公告目前僅支援群益投信 ETF</h3>
+                        <p>統一投信目前未提供公告資料 API，重要公告 feed 暫僅支援群益美國增長 ETF (00997A)。</p>
+                    </div>
+                    
+                    <div class="announcements-content-wrapper card glass-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-bullhorn text-glow"></i> 重要公告與除息通知 feed</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="announcements-feed" id="announcements-feed-list">
+                                <!-- Dynamic entries -->
+                                <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i> 載入公告中...</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. SETTINGS TAB -->
+                <section id="settings-tab" class="tab-pane">
+                    <div class="settings-grid">
+                        <!-- Left Panel: Settings form -->
+                        <div class="card glass-card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-gear"></i> 個人持倉與 API 配置</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="settings-form" onsubmit="return false;">
+                                    <div class="form-group">
+                                        <label for="input-personal-units">個人持有 <span id="settings-etf-label">00997A</span> 單位數 (股)</label>
+                                        <input type="number" id="input-personal-units" placeholder="例如: 10000" min="0" step="any">
+                                        <span class="help-text">系統會用此單位數乘以每日最新淨值，算出您該部位總價值變化。無需填寫成本。</span>
+                                    </div>
+                                    
+                                    <div class="form-group mt-4">
+                                        <label for="input-gemini-key">Gemini API Key</label>
+                                        <div class="input-password-wrapper">
+                                            <input type="password" id="input-gemini-key" placeholder="AIxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                                            <button type="button" class="btn-toggle-password" id="btn-toggle-key-visibility">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
+                                        <span class="help-text">輸入 Google Gemini 密鑰。AI 能在每日成分股調整時，為您產生操盤動作與操作策略建議報告。</span>
+                                    </div>
+
+                                    <button class="btn btn-glow mt-4" id="btn-save-settings">
+                                        <i class="fa-solid fa-save"></i> 儲存設定
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Scraper controls and logs -->
+                        <div class="card glass-card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-terminal"></i> 爬蟲維護與排程測試</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-3">
+                                    系統每天會經由 Windows 排程工作（每日晚上自動執行）更新淨值與持股。您可以在此手動觸發同步任務。
+                                </p>
+                                
+                                <div class="action-buttons mb-4">
+                                    <button class="btn btn-blue" id="btn-manual-sync">
+                                        <i class="fa-solid fa-rotate"></i> 手動同步最新數據
+                                    </button>
+                                    <button class="btn btn-purple" id="btn-force-ai-run">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> 強制重新生成 AI 報告
+                                    </button>
+                                </div>
+
+                                <div class="log-console-wrapper">
+                                    <div class="console-header">
+                                        <span>執行日誌 (Sync Console Log)</span>
+                                        <button class="btn-clear-console" id="btn-clear-logs"><i class="fa-solid fa-trash"></i></button>
+                                    </div>
+                                    <div class="console-body" id="sync-console-output">
+                                        <div class="system-line">[System] 監聽準備就緒。手動執行同步後，日誌將顯示於此...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification for success/errors -->
+    <div class="toast" id="toast-notification">
+        <i class="fa-solid fa-circle-check info-icon" id="toast-icon"></i>
+        <span class="msg" id="toast-message">設定已成功儲存！</span>
+    </div>
+
+    <!-- Import main frontend script -->
+    <script src="js/app.js"></script>
+</body>
+</html>
